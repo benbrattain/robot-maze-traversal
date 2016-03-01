@@ -106,7 +106,8 @@ while(true) {
 
 		if(doServo){
 			motor[leftMotor] = 0;
-  				motor[rightMotor] = 0;
+  		motor[rightMotor] = 0;
+      
 		  for (int i = -127; i<127 ; i +=3)  {
 
 		  	ServoMove(i);
