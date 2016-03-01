@@ -186,3 +186,10 @@ void Back() {
 	wait10Msec(50);
 	Stop();
 }
+
+void checkDone(){
+	int light = SensorValue(lightSensor);
+	if (light <= 100) {
+		Done = true;
+	}
+}
