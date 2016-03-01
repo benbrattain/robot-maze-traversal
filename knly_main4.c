@@ -23,17 +23,24 @@ void LeftWalk();
 void GapWalk();
 
 // global vars
-bool Done=false; // if we find the light
+bool foundLight=false; // if we find the light
 int rotCnt=0;
+bool Done = false; // have you gotten to the light yet?
 
 // main
 task main() {	
-	while(!Done) {
+	while(!foundLight) {
 		NaiveBump();
 		
 		//LeftWalk();
 		//GapWalk();
 		Forward();
+		checkfoundLight();
+	}
+
+	while(!Done){
+		Forward();
+		checkDone();
 	}
 }
 
@@ -186,6 +193,18 @@ void Back() {
 	motor[rightMotor]=100;
 	wait10Msec(50);
 	Stop();
+}
+
+//Scans for light, if close enough, ends program.
+void checkFoundLight(){
+	int light = SensorValue(lightSensor);
+	for (int i = -127; i < 127; i+= 10){
+		light = SensorValue(lightSensor);
+		if (light <= 200) {
+			foundLight = true;
+			break;
+		}
+	}
 }
 
 void checkDone(){
