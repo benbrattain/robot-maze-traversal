@@ -1,7 +1,7 @@
 #pragma config(Sensor, in1,    potSensor,      sensorPotentiometer)
 #pragma config(Sensor, in8,    lightSensor,    sensorReflection)
 #pragma config(Sensor, dgtl1,  bump1,          sensorTouch)
-#pragma config(Sensor, dgtl2,  Sonar,          sensorSONAR_inch)
+#pragma config(Sensor, dgtl2,  Sonar,          sensorSONAR_mm)
 #pragma config(Motor,  port2,  rightMotor,     tmotorVex393, openLoop)
 #pragma config(Motor,  port3,  leftMotor,      tmotorVex393, openLoop)
 #pragma config(Motor,  port4,  Servo,          tmotorServoContinuousRotation, openLoop)
@@ -25,7 +25,8 @@ void GapWalk();
 bool foundLight=false; // if we find the light
 int rotCnt=0;
 bool Done = false; // have you gotten to the light yet?
-
+bool northThere = FALSE;
+bool eastThere = FALSE;
 // main
 task main() {	
 	while(!foundLight) {
@@ -42,6 +43,29 @@ task main() {
 		turnToLight();
 		checkDone();
 	}
+}
+
+void LookAround(){
+		northThere= SonarDetect(127);
+		eastThere= SonarDetect(-127);
+	if(northThere && eastThere){
+		Left();
+	}
+	if(northThere && !eastThere){
+		Right();
+	}
+
+}
+
+bool SonarDetect(int servoVal){
+	Motor[Servo] = servoVal;
+	if (SensorValue(Sonar) >= 65){
+		return FALSE;
+	}
+	else{
+		return TRUE;
+	}
+
 }
 
 void GapWalk() {
