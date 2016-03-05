@@ -1,6 +1,7 @@
 #pragma config(Sensor, in1,    potSensor,      sensorPotentiometer)
 #pragma config(Sensor, in8,    lightSensor,    sensorReflection)
 #pragma config(Sensor, dgtl1,  bump1,          sensorTouch)
+#pragma config(Sensor, dgtl2,  bump2,          sensorTouch)
 #pragma config(Sensor, dgtl11, Sonar,          sensorSONAR_mm)
 #pragma config(Motor,  port2,           rightmotor,    tmotorVex393, openLoop)
 #pragma config(Motor,  port3,           leftmotor,     tmotorVex393, openLoop)
@@ -34,11 +35,13 @@ bool eastThere;
 // main
 task main() {
     while(true) {
-        NaiveBump();
+        //NaiveBump();
         //LeftWalk();
         //GapWalk();
-        LookAround();
+        //LookAround();
+
         Forward();
+        MasterPlan();
         //checkfoundLight();
       //newVal = SensorValue(Sonar);
       //writeDebugStreamLine("%d",newVal);
@@ -268,6 +271,56 @@ void Back() {
 //      }
 //  }
 //}
+
+
+void MasterPlan(){
+    newVal  = SensorValue(Sonar);
+    //if there is no wall to the right turn right
+    if(newVal > 500){
+        Stop();
+        Right();
+    }
+    //if we are 300 mm from wall get closer to it
+    else if(newVal >300){
+        SRight();
+    }
+    //if we are less than 200 mm from wall get farther from it
+    else if(newVal < 200){
+        SLeft();
+    }
+
+    //if it bumps turn left
+    if (SensorValue(bump1)!=0 || SensorValue(bump2)!=0) {
+        Stop();
+        Back();
+        Left();
+        Forward();
+
+        //if it bumps again turn 180 (turning right from initial bump)
+        if (SensorValue(bump1)!=0 || SensorValue(bump2)!=0) {
+            Stop();
+            Back();
+            Right();
+            Right();
+          Forward();
+          Forward();
+
+          // if it bumps an extra time turn right (turning around from initial bump)
+
+            if (SensorValue(bump1)!=0 || SensorValue(bump2)!=0) {
+                Stop();
+                Back();
+                Right();
+                Forward();
+            }
+        }
+    }
+
+
+}
+
+
+
 ////Scans for light, if close enough, ends program.
 //bool checkFoundLight(int light){
 //  if (light <= 200) {
