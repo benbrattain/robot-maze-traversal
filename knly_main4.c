@@ -216,7 +216,7 @@ void SLeft() {
  
 void Right() {
     motor[rightmotor]=70;
-    motor[leftmotor]=80;
+    motor[leftmotor]=50;
     wait10Msec(60);
     Stop();
 }
