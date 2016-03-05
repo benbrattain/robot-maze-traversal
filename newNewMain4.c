@@ -19,14 +19,28 @@ void Forward();
 void Back();
 void Stop();
 void MasterPlan();
+bool EventTrigger():
 int newVal;
 
 // main
 task main() {
     while(true) {
-        Forward();
-	MasterPlan();
+      while(!EventTrigger){
+       EventListener();
+       motor[leftmotor]=127;
+       motor[rightmotor]=-127;
+      }
+      Stop();
+	    MasterPlan();
+      EventListener = false;
     }
+}
+
+void EventListener(){
+  if(SensorValue(bump1)!=0 || SensorValue(bump2)!=0  || SensorValue(bump3)!=0 || SensorValue(Sonar)>300 || SensorValue(Sonar) <250){
+    EventTrigger = true;
+  }
+
 }
 
 void MasterPlan(){
